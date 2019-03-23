@@ -31,6 +31,8 @@
     owner: root
     group: root
     mode: 0644
+  notify:
+    - reload systemd
 - name: copy dogecoin config
   become: yes
   template:
@@ -51,3 +53,11 @@
     src: dogecoin-cli.conf.ini
     dest: /home/{{ ansible_user }}/.dogecoin/dogecoin.conf
     mode: 0600
+- name: autostart dogecoind
+  become: yes
+  service:
+    name: dogecoin
+    enabled: "{{ 'yes' if dogecoind_autostart else 'no' | default('no') }}"
+  notify:
+    - reload systemd
+    - restart dogecoind

@@ -4,6 +4,8 @@ compile_threads: 1
 dogecoind_version: v1.14-beta-1
 dogecoind_bdb_prefix: /usr/local/BerkeleyDB.5.1
 dogecoind_datadir: /var/lib/dogecoind
+dogecoind_autostart: no
+
 dogecoind_user: dogecoin
 dogecoind_group: dogecoin
 dogecoind_testnet: 0

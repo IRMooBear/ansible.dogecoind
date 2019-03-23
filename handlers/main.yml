@@ -6,3 +6,12 @@
     target: clean
   args:
     chdir: /usr/local/src/dogecoin
+- name: reload systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
+- name: restart dogecoind
+  become: yes
+  service:
+    name: dogecoin
+    state: "{{ 'restarted' if dogecoind_autostart else 'stopped' }}"
