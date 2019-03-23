@@ -1,0 +1,8 @@
+---
+# handlers file for roles/dogecoind
+- name: make clean dogecoind
+  become: no
+  make:
+    target: clean
+  args:
+    chdir: /usr/local/src/dogecoin

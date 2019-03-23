@@ -1,0 +1,55 @@
+---
+- import_tasks: Debian.yml
+  when: ansible_os_family == 'Debian'
+- name: change dogecoind repo ownership
+  become: yes
+  file:
+    path: /usr/local/src/dogecoin
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    recurse: yes
+- name: run dogecoind autogen
+  become: no
+  command: ./autogen.sh
+  args:
+    chdir: /usr/local/src/dogecoin
+- name: configure dogecoind
+  become: no
+  command: ./configure LDFLAGS=-L${BDB_PREFIX}/lib/ CPPFLAGS=-I${BDB_PREFIX}/include/
+  args:
+    chdir: /usr/local/src/dogecoin
+  environment:
+    BDB_PREFIX: "{{ dogecoind_bdb_prefix }}"
+- name: make dogecoind
+  become: no
+  make:
+    target: all
+    params:
+      MAKEFLAGS: -j{{ compile_threads }}
+      NUM_THREADS: "{{ compile_threads }}"
+  args:
+    chdir: /usr/local/src/dogecoin
+- name: make install dogecoind
+  become: yes
+  make:
+    target: install
+  args:
+    chdir: /usr/local/src/dogecoin
+- name: add dogecoin group
+  become: yes
+  group:
+    name: "{{ dogecoind_group }}"
+    state: present
+- name: create dogecoin user
+  become: yes
+  user:
+    name: "{{ dogecoind_user }}"
+    group: "{{ dogecoind_group }}"
+    create_home: no
+    shell: /usr/sbin/nologin
+- name: add ansible user to dogecoin group
+  become: yes
+  user:
+    name: "{{ ansible_user }}"
+    groups: "{{ dogecoind_group }}"
+    append: yes

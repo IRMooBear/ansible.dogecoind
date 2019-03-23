@@ -1,0 +1,53 @@
+---
+# tasks file for roles/dogecoind
+- name: clone dogecoin/dogecoin.git
+  become: yes
+  git:
+    repo: https://github.com/dogecoin/dogecoin.git
+    dest: /usr/local/src/dogecoin
+    clone: yes
+    update: yes
+    version: "{{ dogecoind_version }}"
+  register: dogecoind_repo
+- name: check dogecoind exists
+  stat:
+    path: /usr/local/bin/dogecoind
+  register: dogecoind_check
+- import_tasks: compile_dogecoind.yml
+  when: not dogecoind_check.stat.exists or dogecoind_repo.after != dogecoind_repo.before
+- name: create dogecoind directory
+  become: yes
+  file:
+    path: /var/lib/dogecoind
+    state: directory
+    owner: "{{ dogecoind_user }}"
+    group: "{{ dogecoind_group }}"
+    mode: 0755
+- name: create dogecoin service
+  become: yes
+  template:
+    src: dogecoin.service.ini
+    dest: /lib/systemd/system/dogecoin.service
+    owner: root
+    group: root
+    mode: 0644
+- name: copy dogecoin config
+  become: yes
+  template:
+    src: dogecoin.conf.ini
+    dest: /etc/dogecoin.conf
+    owner: root
+    group: root
+    mode: 0644
+- name: make .dogecoin folder
+  become: no
+  file:
+    path: /home/{{ ansible_user }}/.dogecoin
+    state: directory
+    mode: 0700
+- name: copy dogecoin-cli config
+  become: no
+  template:
+    src: dogecoin-cli.conf.ini
+    dest: /home/{{ ansible_user }}/.dogecoin/dogecoin.conf
+    mode: 0600

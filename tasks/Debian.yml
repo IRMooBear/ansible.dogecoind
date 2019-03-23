@@ -1,0 +1,6 @@
+---
+- name: apt install dogecoind depandencies
+  become: yes
+  apt:
+    state: present
+    name: "{{ dogecoind_config[ansible_os_family].dependencies }}"
