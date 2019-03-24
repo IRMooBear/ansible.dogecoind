@@ -1,6 +1,8 @@
 ---
 - import_tasks: Debian.yml
   when: ansible_os_family == 'Debian'
+- import_tasks: RedHat.yml
+  when: ansible_os_family == 'RedHat'
 - name: change dogecoind repo ownership
   become: yes
   file:

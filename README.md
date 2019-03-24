@@ -1,7 +1,11 @@
+[![Build Status](https://travis-ci.org/IRMooBear/ansible.dogecoind.svg?branch=master)](https://travis-ci.org/IRMooBear/ansible.dogecoind)
+
 Dogecoind
 =========
 
 This ansible role compile dogecoin core on RPI.
+
+**I no longer recommend running this on an RPI.  The limited RAM causes too many crashes leading to reindex and more crashes.  You can build it, but it wouldn't run very well.**
 
 Requirements
 ------------

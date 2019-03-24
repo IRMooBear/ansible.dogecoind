@@ -1,0 +1,6 @@
+---
+- name: yum install dogecoind dependencies
+  become: yes
+  yum:
+    state: present
+    name: "{{ dogecoind_config[ansible_os_family].dependencies }}"

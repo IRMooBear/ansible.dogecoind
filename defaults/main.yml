@@ -29,6 +29,11 @@ dogecoind_config:
       - libboost-all-dev
       - libssl1.0-dev
       - libevent-dev
+  RedHat:
+    dependencies:
+      - boost-devel
+      - openssl-devel
+      - libevent-devel
 
 dogecoind_addnode:
   - 23.239.31.246
